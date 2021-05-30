@@ -1,0 +1,15 @@
+{
+    "id": "925a2e1e-d239-4ab8-a583-57203a8c3754",
+    "version": "0.0.1",
+    "requiredApiVersion": "^1.4.0",
+    "iconFile": "icon.png",
+    "author": {
+        "name": "Rocket.Chat",
+        "homepage": "https://rocket.chat/",
+        "support": "support@rocket.chat"
+    },
+    "name": "BadWords",
+    "nameSlug": "badwords",
+    "classFile": "BadWordsApp.ts",
+    "description": "A simple app to block badwords and apply moderation policies in channels"
+}
