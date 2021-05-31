@@ -1,23 +1,27 @@
-import { IHttp, IRead } from "@rocket.chat/apps-engine/definition/accessors";
+import {
+    IConfigurationModify,
+    IHttp,
+    IRead,
+} from "@rocket.chat/apps-engine/definition/accessors";
 import { IApp } from "@rocket.chat/apps-engine/definition/IApp";
-import { AppSetting } from "../config/Settings";
+import { ISetting } from "@rocket.chat/apps-engine/definition/settings";
+import { getBlockedWords } from "../lib/Settings";
 
 export class OnSettingsUpdatedHandler {
     constructor(
         private readonly app: IApp,
+        private readonly settings: ISetting,
+        private readonly configurationModify: IConfigurationModify,
         private readonly read: IRead,
         private readonly http: IHttp
     ) {}
 
     public async run(): Promise<Array<string>> {
-        const badWordsURL: string = await this.read
-            .getEnvironmentReader()
-            .getSettings()
-            .getValueById(AppSetting.LinkToExtractBadWords);
-        const fetchBlockedWordsFromURL = await this.http.get(badWordsURL);
-        const blockedWordsFromURL = JSON.parse(
-            fetchBlockedWordsFromURL.content || ""
+        const blockedWords = getBlockedWords(
+            this.read.getEnvironmentReader(),
+            this.http
         );
-        return blockedWordsFromURL.words;
+
+        return blockedWords;
     }
 }

@@ -12,11 +12,12 @@ import { IAppInfo } from "@rocket.chat/apps-engine/definition/metadata";
 import { ISetting } from "@rocket.chat/apps-engine/definition/settings";
 import { Settings } from "./config/Settings";
 import { OnSettingsUpdatedHandler } from "./handlers/OnSettingsUpdatedHandler";
+import { getBlockedWords } from "./lib/Settings";
 export class BadWordsApp extends App {
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
         super(info, logger, accessors);
     }
-    public blockedWords: any;
+    public blockedWords: Array<string>;
 
     public async onSettingUpdated(
         setting: ISetting,
@@ -24,7 +25,13 @@ export class BadWordsApp extends App {
         read: IRead,
         http: IHttp
     ): Promise<void> {
-        const settingsUpdated = new OnSettingsUpdatedHandler(this, read, http);
+        const settingsUpdated = new OnSettingsUpdatedHandler(
+            this,
+            setting,
+            configurationModify,
+            read,
+            http
+        );
         this.blockedWords = await settingsUpdated.run();
     }
 
@@ -37,5 +44,6 @@ export class BadWordsApp extends App {
                 configuration.settings.provideSetting(setting)
             )
         );
+        this.blockedWords = await getBlockedWords(environmentRead, this.getAccessors().http);
     }
 }
