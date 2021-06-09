@@ -5,19 +5,45 @@ import {
     IEnvironmentRead,
     IHttp,
     ILogger,
+    IMessageBuilder,
+    IPersistence,
     IRead,
 } from "@rocket.chat/apps-engine/definition/accessors";
 import { App } from "@rocket.chat/apps-engine/definition/App";
+import {
+    IMessage,
+    IPreMessageSentModify,
+} from "@rocket.chat/apps-engine/definition/messages";
 import { IAppInfo } from "@rocket.chat/apps-engine/definition/metadata";
 import { ISetting } from "@rocket.chat/apps-engine/definition/settings";
 import { Settings } from "./config/Settings";
 import { OnSettingsUpdatedHandler } from "./handlers/OnSettingsUpdatedHandler";
+import { PreMessageSentHandler } from "./handlers/PreMessageSentHandler";
 import { getBlockedWords } from "./lib/Settings";
-export class BadWordsApp extends App {
+export class BadWordsApp extends App implements IPreMessageSentModify {
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
         super(info, logger, accessors);
     }
     public blockedWords: Array<string>;
+
+    async executePreMessageSentModify(
+        message: IMessage,
+        builder: IMessageBuilder,
+        read: IRead,
+        http: IHttp,
+        persist: IPersistence
+    ): Promise<IMessage> {
+        const preMessageHandler = new PreMessageSentHandler(
+            this,
+            message,
+            builder,
+            read,
+            http,
+            persist,
+            this.blockedWords
+        );
+        return preMessageHandler.run();
+    }
 
     public async onSettingUpdated(
         setting: ISetting,
@@ -44,6 +70,9 @@ export class BadWordsApp extends App {
                 configuration.settings.provideSetting(setting)
             )
         );
-        this.blockedWords = await getBlockedWords(environmentRead, this.getAccessors().http);
+        this.blockedWords = await getBlockedWords(
+            environmentRead,
+            this.getAccessors().http
+        );
     }
 }

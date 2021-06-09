@@ -12,5 +12,7 @@
     "nameSlug": "badwords",
     "classFile": "BadWordsApp.ts",
     "description": "A simple app to block badwords and apply moderation policies in channels",
-    "implements": []
+    "implements": [
+        "IPreMessageSentModify"
+    ]
 }
