@@ -16,15 +16,31 @@ export const getBlockedWords = async (
         .getSettings()
         .getValueById(AppSetting.ListOfBlockedWords);
 
+    const listOfAllowedWordsSetting: string = await environmentRead
+        .getSettings()
+        .getValueById(AppSetting.ListOfAllowededWords);
+
+    const listOfAllowedWords: Array<string> = listOfAllowedWordsSetting
+        .split(",")
+        .map((word) => word.trim());
+
+    const blockedWordsFromSettings: Array<string> = listOfBlockedWordsSetting
+        .split(",")
+        .map((word) => word.trim());
+
     const fetchBlockedWordsFromURL = await http.get(badWordsURL);
     const blockedWordsFromURL = JSON.parse(
         fetchBlockedWordsFromURL.content || "{}"
     );
     const blockedWords: Array<string> = blockedWordsFromURL.words;
-
-    const blockedWordsFromSettings: Array<string> = listOfBlockedWordsSetting
-        .split(",")
-        .map((word) => word.trim());
     blockedWords.push(...blockedWordsFromSettings);
+
+    listOfAllowedWords.map((word) => {
+        const idx = blockedWords.indexOf(word);
+        if (idx > -1) {
+            blockedWords.splice(idx, 1);
+        }
+    });
+
     return blockedWords;
 };
