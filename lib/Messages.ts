@@ -23,14 +23,16 @@ const replaceWord = (string: string): string => {
 };
 
 export const clean = (blockedWords: Array<string>, string: string) => {
+    let isAnyWordProfane = false;
     let cleanText: string = string
         .split(splitRegex)
         .map((word) => {
             if (isProfane(blockedWords, word)) {
+                isAnyWordProfane = true;
                 word = replaceWord(word);
             }
             return word;
         })
         .join(splitRegex.exec(string)![0]);
-    return cleanText;
+    return { isAnyWordProfane, cleanText };
 };

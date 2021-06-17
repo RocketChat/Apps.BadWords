@@ -19,9 +19,17 @@ export class PreMessageSentHandler {
     ) {}
 
     public async run() {
-        const { text = "", room, sender } = this.message;
+        if (this.blockedWords.length == 0) {
+            return this.message;
+        }
 
-        const cleanText = clean(this.blockedWords, text);
+        const { text = "", room, sender } = this.message;
+        const { cleanText, isAnyWordProfane } = clean(this.blockedWords, text);
+
+        if (!isAnyWordProfane) {
+            return this.message;
+        }
+
         const cleanMessage = this.builder
             .setText(cleanText)
             .setRoom(room)
