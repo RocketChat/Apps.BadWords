@@ -6,6 +6,8 @@ import {
 export enum AppSetting {
     LinkToExtractBadWords = "link_to_extract_bad_words",
     ApplyFilterToAllChannels = "apply_filter_to_all_channels",
+    ApplyFilterToDirectMessages = "apply_filter_to_direct_messages",
+    ApplyFilterToLivechatMessages = "apply_filter_to_livechat_messages",
     ListOfBlockedWords = "list_of_blocked_words",
     ListOfAllowededWords = "list_of_Allowed_words",
     IncludeChannels = "include_channels",
@@ -36,6 +38,22 @@ export const Settings: Array<ISetting> = [
         type: SettingType.STRING,
         packageValue: "",
         i18nLabel: "list_of_Allowed_words",
+        required: false,
+    },
+    {
+        id: AppSetting.ApplyFilterToDirectMessages,
+        public: true,
+        type: SettingType.BOOLEAN,
+        packageValue: true,
+        i18nLabel: "apply_filter_to_direct_messages",
+        required: false,
+    },
+    {
+        id: AppSetting.ApplyFilterToLivechatMessages,
+        public: true,
+        type: SettingType.BOOLEAN,
+        packageValue: true,
+        i18nLabel: "apply_filter_to_livechat_messages",
         required: false,
     },
     {

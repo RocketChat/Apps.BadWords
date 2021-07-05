@@ -51,10 +51,19 @@ export class CheckPreMessageSentHandler {
         const { room, sender } = this.message;
         const { type } = room;
 
-        if (type !== "l" && type !== "d") {
-            return this.checkForChannels(room);
+        switch (type) {
+            case "d":
+                return await getSettingValue(
+                    this.read.getEnvironmentReader(),
+                    AppSetting.ApplyFilterToDirectMessages
+                );
+            case "l":
+                return await getSettingValue(
+                    this.read.getEnvironmentReader(),
+                    AppSetting.ApplyFilterToLivechatMessages
+                );
+            default:
+                return this.checkForChannels(room);
         }
-
-        return true;
     }
 }
