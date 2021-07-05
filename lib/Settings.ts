@@ -44,3 +44,12 @@ export const getBlockedWords = async (
 
     return blockedWords;
 };
+
+export const getSettingValue = async (
+    environmentRead: IEnvironmentRead,
+    id: string
+) => {
+    return await (
+        await environmentRead.getSettings().getById(id)
+    ).value;
+};

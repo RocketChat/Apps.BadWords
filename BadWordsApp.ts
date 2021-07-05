@@ -17,6 +17,7 @@ import {
 import { IAppInfo } from "@rocket.chat/apps-engine/definition/metadata";
 import { ISetting } from "@rocket.chat/apps-engine/definition/settings";
 import { Settings } from "./config/Settings";
+import { CheckPreMessageSentHandler } from "./handlers/CheckPreMessageSentHandler";
 import { OnSettingsUpdatedHandler } from "./handlers/OnSettingsUpdatedHandler";
 import { PreMessageSentHandler } from "./handlers/PreMessageSentHandler";
 import { getBlockedWords } from "./lib/Settings";
@@ -25,6 +26,21 @@ export class BadWordsApp extends App implements IPreMessageSentModify {
         super(info, logger, accessors);
     }
     public blockedWords: Array<string>;
+
+    async checkPreMessageSentModify(
+        message: IMessage,
+        read: IRead,
+        http: IHttp
+    ): Promise<boolean> {
+        const checkPreMessageSentHandler = new CheckPreMessageSentHandler(
+            this,
+            message,
+            read,
+            http,
+            this.blockedWords
+        );
+        return checkPreMessageSentHandler.check();
+    }
 
     async executePreMessageSentModify(
         message: IMessage,
