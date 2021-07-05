@@ -13,6 +13,7 @@ import { App } from "@rocket.chat/apps-engine/definition/App";
 import {
     IMessage,
     IPreMessageSentModify,
+    IPreMessageUpdatedModify,
 } from "@rocket.chat/apps-engine/definition/messages";
 import { IAppInfo } from "@rocket.chat/apps-engine/definition/metadata";
 import { ISetting } from "@rocket.chat/apps-engine/definition/settings";
@@ -21,7 +22,10 @@ import { CheckPreMessageSentHandler } from "./handlers/CheckPreMessageSentHandle
 import { OnSettingsUpdatedHandler } from "./handlers/OnSettingsUpdatedHandler";
 import { PreMessageSentHandler } from "./handlers/PreMessageSentHandler";
 import { getBlockedWords } from "./lib/Settings";
-export class BadWordsApp extends App implements IPreMessageSentModify {
+export class BadWordsApp
+    extends App
+    implements IPreMessageSentModify, IPreMessageUpdatedModify
+{
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
         super(info, logger, accessors);
     }
@@ -49,7 +53,7 @@ export class BadWordsApp extends App implements IPreMessageSentModify {
         http: IHttp,
         persist: IPersistence
     ): Promise<IMessage> {
-        const preMessageHandler = new PreMessageSentHandler(
+        const preMessageSentHandler = new PreMessageSentHandler(
             this,
             message,
             builder,
@@ -58,7 +62,41 @@ export class BadWordsApp extends App implements IPreMessageSentModify {
             persist,
             this.blockedWords
         );
-        return preMessageHandler.run();
+        return preMessageSentHandler.run();
+    }
+
+    async checkPreMessageUpdatedModify(
+        message: IMessage,
+        read: IRead,
+        http: IHttp
+    ): Promise<boolean> {
+        const checkPreMessageUpdatedHandler = new CheckPreMessageSentHandler(
+            this,
+            message,
+            read,
+            http,
+            this.blockedWords
+        );
+        return checkPreMessageUpdatedHandler.check();
+    }
+
+    async executePreMessageUpdatedModify(
+        message: IMessage,
+        builder: IMessageBuilder,
+        read: IRead,
+        http: IHttp,
+        persist: IPersistence
+    ): Promise<IMessage> {
+        const preMessageUpdatedHandler = new PreMessageSentHandler(
+            this,
+            message,
+            builder,
+            read,
+            http,
+            persist,
+            this.blockedWords
+        );
+        return preMessageUpdatedHandler.run();
     }
 
     public async onSettingUpdated(
