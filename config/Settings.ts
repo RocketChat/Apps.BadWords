@@ -69,7 +69,7 @@ export const Settings: Array<ISetting> = [
         public: true,
         type: SettingType.STRING,
         packageValue: "",
-        i18nLabel: "Include_the_Channels",
+        i18nLabel: "include_channels",
         required: false,
     },
     {
@@ -77,7 +77,7 @@ export const Settings: Array<ISetting> = [
         public: true,
         type: SettingType.STRING,
         packageValue: "",
-        i18nLabel: "Exclude_the_Channels",
+        i18nLabel: "exclude_channels",
         required: false,
     },
 ];
