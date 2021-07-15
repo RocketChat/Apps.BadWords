@@ -27,7 +27,6 @@ export class PreMessageSentHandler {
         }
 
         const { text = "", room, sender, attachments = [] } = this.message;
-        // const attachments = this.message.attachments as IMessageAttachment[];
         const isAttachment = attachments.length > 0;
         const messageText = text ? text : attachments[0].description;
 
@@ -40,6 +39,8 @@ export class PreMessageSentHandler {
             return this.message;
         }
 
+        const filteredMessage = this.builder.setRoom(room).setSender(sender);
+
         if (isAttachment) {
             const filteredAttachment = [
                 {
@@ -48,19 +49,11 @@ export class PreMessageSentHandler {
                 },
             ];
 
-            const cleanAttachmentMessage = this.builder
-                .setAttachments(filteredAttachment)
-                .setRoom(room)
-                .setSender(sender);
-
-            return cleanAttachmentMessage.getMessage();
+            filteredMessage.setAttachments(filteredAttachment);
+        } else {
+            filteredMessage.setText(cleanText);
         }
 
-        const cleanTextMessage = this.builder
-            .setText(cleanText)
-            .setRoom(room)
-            .setSender(sender);
-
-        return cleanTextMessage.getMessage();
+        return filteredMessage.getMessage();
     }
 }
