@@ -5,7 +5,10 @@ import {
     IRead,
 } from "@rocket.chat/apps-engine/definition/accessors";
 import { IApp } from "@rocket.chat/apps-engine/definition/IApp";
-import { IMessage } from "@rocket.chat/apps-engine/definition/messages";
+import {
+    IMessage,
+    IMessageAttachment,
+} from "@rocket.chat/apps-engine/definition/messages";
 import { clean } from "../lib/Messages";
 export class PreMessageSentHandler {
     constructor(
@@ -23,18 +26,41 @@ export class PreMessageSentHandler {
             return this.message;
         }
 
-        const { text = "", room, sender } = this.message;
-        const { cleanText, isAnyWordProfane } = clean(this.blockedWords, text);
+        const { text = "", room, sender, attachments = [] } = this.message;
+        // const attachments = this.message.attachments as IMessageAttachment[];
+        const isAttachment = attachments.length > 0;
+        const messageText = text ? text : attachments[0].description;
+
+        const { cleanText, isAnyWordProfane } = clean(
+            this.blockedWords,
+            messageText ? messageText : ""
+        );
 
         if (!isAnyWordProfane) {
             return this.message;
         }
 
-        const cleanMessage = this.builder
+        if (isAttachment) {
+            const filteredAttachment = [
+                {
+                    ...attachments[0],
+                    description: cleanText,
+                },
+            ];
+
+            const cleanAttachmentMessage = this.builder
+                .setAttachments(filteredAttachment)
+                .setRoom(room)
+                .setSender(sender);
+
+            return cleanAttachmentMessage.getMessage();
+        }
+
+        const cleanTextMessage = this.builder
             .setText(cleanText)
             .setRoom(room)
             .setSender(sender);
 
-        return cleanMessage.getMessage();
+        return cleanTextMessage.getMessage();
     }
 }
