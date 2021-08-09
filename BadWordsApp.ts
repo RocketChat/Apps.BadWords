@@ -17,11 +17,13 @@ import {
 } from "@rocket.chat/apps-engine/definition/messages";
 import { IAppInfo } from "@rocket.chat/apps-engine/definition/metadata";
 import { ISetting } from "@rocket.chat/apps-engine/definition/settings";
+import { TestCommand } from "./commands/testCommand";
 import { Settings } from "./config/Settings";
 import { CheckPreMessageSentHandler } from "./handlers/CheckPreMessageSentHandler";
 import { OnSettingsUpdatedHandler } from "./handlers/OnSettingsUpdatedHandler";
 import { PreMessageSentHandler } from "./handlers/PreMessageSentHandler";
 import { getBlockedWords } from "./lib/Settings";
+
 export class BadWordsApp
     extends App
     implements IPreMessageSentModify, IPreMessageUpdatedModify
@@ -123,6 +125,9 @@ export class BadWordsApp
             Settings.map((setting) =>
                 configuration.settings.provideSetting(setting)
             )
+        );
+        await configuration.slashCommands.provideSlashCommand(
+            new TestCommand()
         );
         this.blockedWords = await getBlockedWords(
             environmentRead,
