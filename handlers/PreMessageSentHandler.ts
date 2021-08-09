@@ -10,6 +10,8 @@ import {
     IMessageAttachment,
 } from "@rocket.chat/apps-engine/definition/messages";
 import { clean } from "../lib/Messages";
+import { storeStatsForOffendingUsers } from "../lib/storeStats";
+
 export class PreMessageSentHandler {
     constructor(
         private app: IApp,
@@ -53,6 +55,8 @@ export class PreMessageSentHandler {
         } else {
             filteredMessage.setText(cleanText);
         }
+
+        storeStatsForOffendingUsers(room, sender, this.persist, this.read);
 
         return filteredMessage.getMessage();
     }
