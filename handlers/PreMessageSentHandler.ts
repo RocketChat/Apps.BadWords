@@ -11,6 +11,7 @@ import {
 } from "@rocket.chat/apps-engine/definition/messages";
 import { clean } from "../lib/Messages";
 import { storeStatsForOffendingUsers } from "../lib/storeStats";
+import { sendNotifyMessage } from "../lib/sendNotifyMessage";
 
 export class PreMessageSentHandler {
     constructor(
@@ -56,6 +57,12 @@ export class PreMessageSentHandler {
             filteredMessage.setText(cleanText);
         }
 
+        sendNotifyMessage(
+            room,
+            sender,
+            this.message.threadId,
+            this.read.getNotifier()
+        );
         storeStatsForOffendingUsers(room, sender, this.persist, this.read);
 
         return filteredMessage.getMessage();
