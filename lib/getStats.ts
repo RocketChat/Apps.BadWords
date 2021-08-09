@@ -24,3 +24,16 @@ export async function getStatsForOffendingUser(
 
     return record;
 }
+
+export async function getStatsForRoom(rid: string, read: IRead) {
+    const roomAssociation = new RocketChatAssociationRecord(
+        RocketChatAssociationModel.ROOM,
+        rid
+    );
+
+    const [record] = await read
+        .getPersistenceReader()
+        .readByAssociation(roomAssociation);
+
+    return record;
+}
