@@ -6,14 +6,15 @@ export async function sendNotifyMessage(
     room: IRoom,
     user: IUser,
     threadId: string | undefined,
-    notify: INotifier
+    notify: INotifier,
+    message: string
 ) {
     const builder = notify.getMessageBuilder();
 
     builder
         .setRoom(room)
         .setUsernameAlias("Bad Words Moderator")
-        .setText(`*${user.username}*, Please watch your Language!`);
+        .setText(message);
 
     if (threadId) {
         builder.setThreadId(threadId);

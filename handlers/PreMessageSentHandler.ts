@@ -61,7 +61,8 @@ export class PreMessageSentHandler {
             room,
             sender,
             this.message.threadId,
-            this.read.getNotifier()
+            this.read.getNotifier(),
+            `*${sender.username}*, Please watch your Language!`
         );
         storeStatsForOffendingUsers(room, sender, this.persist, this.read);
 
