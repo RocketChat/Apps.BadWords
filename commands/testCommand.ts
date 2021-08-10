@@ -8,6 +8,7 @@ import {
     ISlashCommand,
     SlashCommandContext,
 } from "@rocket.chat/apps-engine/definition/slashcommands";
+import { sendNotifyMessage } from "../lib/sendNotifyMessage";
 import { showModal } from "../lib/showModal";
 
 export class TestCommand implements ISlashCommand {
@@ -24,17 +25,34 @@ export class TestCommand implements ISlashCommand {
         persis: IPersistence
     ): Promise<void> {
         const triggerId = context.getTriggerId();
-
-        const args = context.getArguments();
-        console.log("Arsga re = ", args);
-
         const room = context.getRoom();
+        const sender = context.getSender();
+        const threadId = context.getThreadId();
 
-        if (triggerId) {
-            const modal = await showModal(room, read, modify);
-            await modify
-                .getUiController()
-                .openModalView(modal, { triggerId }, context.getSender());
+        if (sender.roles.includes("admin") || sender.roles.includes("owner")) {
+            if (triggerId) {
+                const modal = await showModal(room, read, modify);
+                await modify
+                    .getUiController()
+                    .openModalView(modal, { triggerId }, sender);
+                console.log("After UI MODAL");
+            } else {
+                sendNotifyMessage(
+                    room,
+                    sender,
+                    threadId,
+                    modify.getNotifier(),
+                    "Something went wrong!!"
+                );
+            }
+        } else {
+            sendNotifyMessage(
+                room,
+                sender,
+                threadId,
+                modify.getNotifier(),
+                "This slash command can be only used by admins and owners"
+            );
         }
     }
 }

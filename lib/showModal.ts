@@ -1,14 +1,10 @@
 import {
     IModify,
-    IPersistence,
     IRead,
 } from "@rocket.chat/apps-engine/definition/accessors";
-import {
-    RocketChatAssociationModel,
-    RocketChatAssociationRecord,
-} from "@rocket.chat/apps-engine/definition/metadata";
 import { IRoom } from "@rocket.chat/apps-engine/definition/rooms";
 import { IUIKitModalViewParam } from "@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder";
+import { getStatsForRoom } from "./getStats";
 
 export async function showModal(
     room: IRoom,
@@ -17,14 +13,8 @@ export async function showModal(
 ): Promise<IUIKitModalViewParam> {
     const block = modify.getCreator().getBlockBuilder();
 
-    const roomAssociation = new RocketChatAssociationRecord(
-        RocketChatAssociationModel.ROOM,
-        room.id
-    );
-    const records = await read
-        .getPersistenceReader()
-        .readByAssociation(roomAssociation);
-        
+    const records: any = await getStatsForRoom(room.id, read);
+    console.log("Records = ", records);
     if (records.length == 0) {
         block.addContextBlock({
             elements: [
@@ -34,12 +24,20 @@ export async function showModal(
             ],
         });
     } else {
-        console.log("The data is = ", records);
+        records.forEach((record) => {
+            block.addContextBlock({
+                elements: [
+                    block.newMarkdownTextObject(
+                        `*${record.userName}* - *${record.badWordsCount}*`
+                    ),
+                ],
+            });
+        });
     }
 
     return {
-        id: room.id,
-        title: block.newPlainTextObject("This is test"),
+        id: "122121",
+        title: block.newPlainTextObject(`Offending Users in ${room.displayName}`),
         close: block.newButtonElement({
             text: block.newPlainTextObject("Cancel"),
         }),
