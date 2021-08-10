@@ -31,9 +31,9 @@ export async function getStatsForRoom(rid: string, read: IRead) {
         rid
     );
 
-    const [record] = await read
+    const records = await read
         .getPersistenceReader()
         .readByAssociation(roomAssociation);
 
-    return record;
+    return records;
 }

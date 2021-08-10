@@ -12,7 +12,7 @@ import { sendNotifyMessage } from "../lib/sendNotifyMessage";
 import { showModal } from "../lib/showModal";
 
 export class TestCommand implements ISlashCommand {
-    public command = "testing";
+    public command = "bad-words";
     public i18nParamsExample = "example params";
     public i18nDescription = "command description";
     public providesPreview = false;
