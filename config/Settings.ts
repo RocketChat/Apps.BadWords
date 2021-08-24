@@ -12,6 +12,8 @@ export enum AppSetting {
     ListOfAllowededWords = "list_of_Allowed_words",
     IncludeChannels = "include_channels",
     ExcludeChannels = "exclude_channels",
+    SendWarningMessage = "send_warning_message",
+    BanUserAfterThisLimit = "ban_user_after_this_limit",
 }
 
 export const Settings: Array<ISetting> = [
@@ -38,6 +40,14 @@ export const Settings: Array<ISetting> = [
         type: SettingType.STRING,
         packageValue: "",
         i18nLabel: "list_of_Allowed_words",
+        required: false,
+    },
+    {
+        id: AppSetting.SendWarningMessage,
+        public: true,
+        type: SettingType.BOOLEAN,
+        packageValue: true,
+        i18nLabel: "send_warning_message",
         required: false,
     },
     {
@@ -78,6 +88,14 @@ export const Settings: Array<ISetting> = [
         type: SettingType.STRING,
         packageValue: "",
         i18nLabel: "exclude_channels",
+        required: false,
+    },
+    {
+        id: AppSetting.BanUserAfterThisLimit,
+        public: true,
+        type: SettingType.NUMBER,
+        packageValue: 0,
+        i18nLabel: "ban_user_after_this_limit",
         required: false,
     },
 ];

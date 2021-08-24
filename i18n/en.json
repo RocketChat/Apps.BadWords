@@ -6,5 +6,7 @@
     "include_channels": "Include these channels",
     "exclude_channels": "Exclude these channels",
     "apply_filter_to_direct_messages": "Apply Bad Words filtration to Direct Messages",
-    "apply_filter_to_livechat_messages": "Apply Bad Words filtration to LiveChat Messages"
+    "apply_filter_to_livechat_messages": "Apply Bad Words filtration to LiveChat Messages",
+    "send_warning_message": "Send Warning Message to users upon usage of Bad Words",
+    "ban_user_after_this_limit": "Ban user from sending messages after this Limit of Bad Words"
 }
