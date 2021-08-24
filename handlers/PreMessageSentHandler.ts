@@ -12,6 +12,8 @@ import {
 import { clean } from "../lib/Messages";
 import { storeStatsForOffendingUsers } from "../lib/storeStats";
 import { sendNotifyMessage } from "../lib/sendNotifyMessage";
+import { AppSetting } from "../config/Settings";
+import { getSettingValue } from "../lib/Settings";
 
 export class PreMessageSentHandler {
     constructor(
@@ -57,13 +59,21 @@ export class PreMessageSentHandler {
             filteredMessage.setText(cleanText);
         }
 
-        sendNotifyMessage(
-            room,
-            sender,
-            this.message.threadId,
-            this.read.getNotifier(),
-            `*${sender.username}*, Please watch your Language!`
+        const SendWarningMessage = await getSettingValue(
+            this.read.getEnvironmentReader(),
+            AppSetting.SendWarningMessage
         );
+
+        if (SendWarningMessage) {
+            sendNotifyMessage(
+                room,
+                sender,
+                this.message.threadId,
+                this.read.getNotifier(),
+                `*${sender.username}*, Please watch your Language!`
+            );
+        }
+
         storeStatsForOffendingUsers(room, sender, this.persist, this.read);
 
         return filteredMessage.getMessage();
