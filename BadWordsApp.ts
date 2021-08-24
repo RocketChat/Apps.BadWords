@@ -19,7 +19,7 @@ import {
 } from "@rocket.chat/apps-engine/definition/messages";
 import { IAppInfo } from "@rocket.chat/apps-engine/definition/metadata";
 import { ISetting } from "@rocket.chat/apps-engine/definition/settings";
-import { TestCommand } from "./commands/testCommand";
+import { BadWordsCommand } from "./commands/BadWordsCommand";
 import { Settings } from "./config/Settings";
 import { CheckPreMessageSentHandler } from "./handlers/CheckPreMessageSentHandler";
 import { OnSettingsUpdatedHandler } from "./handlers/OnSettingsUpdatedHandler";
@@ -166,7 +166,7 @@ export class BadWordsApp
             )
         );
         await configuration.slashCommands.provideSlashCommand(
-            new TestCommand()
+            new BadWordsCommand()
         );
         this.blockedWords = await getBlockedWords(
             environmentRead,
