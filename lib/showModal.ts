@@ -1,8 +1,6 @@
-import {
-    IModify,
-    IRead,
-} from "@rocket.chat/apps-engine/definition/accessors";
+import { IModify, IRead } from "@rocket.chat/apps-engine/definition/accessors";
 import { IRoom } from "@rocket.chat/apps-engine/definition/rooms";
+import { ButtonStyle } from "@rocket.chat/apps-engine/definition/uikit";
 import { IUIKitModalViewParam } from "@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder";
 import { getStatsForRoom } from "./getStats";
 
@@ -25,11 +23,27 @@ export async function showModal(
         });
     } else {
         records.forEach((record) => {
-            block.addContextBlock({
+            block.addActionsBlock({
                 elements: [
-                    block.newMarkdownTextObject(
-                        `*${record.userName}* - *${record.badWordsCount}*`
-                    ),
+                    block.newButtonElement({
+                        text: block.newPlainTextObject(
+                            `${record.userName} - ${record.badWordsCount}`
+                        ),
+                    }),
+                    block.newButtonElement({
+                        actionId: "clear",
+                        text: block.newPlainTextObject("Clear"),
+                        value: `${record.rid}.${record.uid}`,
+                        style: ButtonStyle.PRIMARY,
+                    }),
+                    block.newButtonElement({
+                        actionId: record.banned ? "unban" : "ban",
+                        text: record.banned
+                            ? block.newPlainTextObject("Un-Ban")
+                            : block.newPlainTextObject("Ban"),
+                        value: `${record.rid}.${record.uid}`,
+                        style: ButtonStyle.DANGER,
+                    }),
                 ],
             });
         });
@@ -37,7 +51,9 @@ export async function showModal(
 
     return {
         id: "122121",
-        title: block.newPlainTextObject(`Offending Users in ${room.displayName}`),
+        title: block.newPlainTextObject(
+            `Offending Users in ${room.displayName}`
+        ),
         close: block.newButtonElement({
             text: block.newPlainTextObject("Cancel"),
         }),

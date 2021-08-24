@@ -15,6 +15,7 @@
     "implements": [
         "IPreMessageSentModify",
         "IPreMessageUpdatedModify",
-        "IPreMessageSentPrevent"
+        "IPreMessageSentPrevent",
+        "IUIKitInteractionHandler"
     ]
 }

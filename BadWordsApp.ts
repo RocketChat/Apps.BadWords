@@ -6,6 +6,7 @@ import {
     IHttp,
     ILogger,
     IMessageBuilder,
+    IModify,
     IPersistence,
     IRead,
 } from "@rocket.chat/apps-engine/definition/accessors";
@@ -25,13 +26,20 @@ import { OnSettingsUpdatedHandler } from "./handlers/OnSettingsUpdatedHandler";
 import { PreMessageSentHandler } from "./handlers/PreMessageSentHandler";
 import { getBlockedWords } from "./lib/Settings";
 import { PreMessageSentPreventHandler } from "./handlers/PreMessageSentPreventHandler";
+import {
+    IUIKitInteractionHandler,
+    IUIKitResponse,
+    UIKitBlockInteractionContext,
+} from "@rocket.chat/apps-engine/definition/uikit";
+import { BlockActionHandler } from "./handlers/BlockActionHandler";
 
 export class BadWordsApp
     extends App
     implements
         IPreMessageSentModify,
         IPreMessageUpdatedModify,
-        IPreMessageSentPrevent
+        IPreMessageSentPrevent,
+        IUIKitInteractionHandler
 {
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
         super(info, logger, accessors);
@@ -115,6 +123,21 @@ export class BadWordsApp
             this.blockedWords
         );
         return preMessageUpdatedHandler.run();
+    }
+
+    async executeBlockActionHandler(
+        context: UIKitBlockInteractionContext,
+        read: IRead,
+        http: IHttp,
+        persist: IPersistence,
+        modify: IModify
+    ): Promise<IUIKitResponse> {
+        const blockActionHandler = new BlockActionHandler(
+            context,
+            read,
+            persist
+        );
+        return blockActionHandler.run();
     }
 
     public async onSettingUpdated(

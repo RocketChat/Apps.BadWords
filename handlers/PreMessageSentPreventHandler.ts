@@ -23,7 +23,7 @@ export class PreMessageSentPreventHandler {
         );
         const banned = record.banned;
 
-        if (badWordsLimit === 0 || badWordsLimit > badWordsCount) {
+        if (badWordsLimit === 0 || (badWordsLimit > badWordsCount && banned === false)) {
             return false;
         }
 
