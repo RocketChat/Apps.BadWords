@@ -1,0 +1,12 @@
+{
+    "link_to_extract_bad_words": "URL to extract Blocked Words",
+    "apply_filter_to_all_channels": "Apply Bad Words filtration Channels, Teams, Groups and discussions",
+    "list_of_blocked_words": "List of Blocked Words",
+    "list_of_Allowed_words": "List of Allowed Words",
+    "include_channels": "Include these channels",
+    "exclude_channels": "Exclude these channels",
+    "apply_filter_to_direct_messages": "Apply Bad Words filtration to Direct Messages",
+    "apply_filter_to_livechat_messages": "Apply Bad Words filtration to LiveChat Messages",
+    "send_warning_message": "Send Warning Message to users upon usage of Bad Words",
+    "ban_user_after_this_limit": "Ban user from sending messages after this Limit of Bad Words"
+}
